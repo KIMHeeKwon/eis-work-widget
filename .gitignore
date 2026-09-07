@@ -3,3 +3,6 @@ desktop/node_modules/
 
 # 앱이 돌면서 남기는 기록. 사내 시스템 주소와 이동 경로가 그대로 담긴다
 desktop/run.log
+
+# 릴리스에 붙이려고 그때그때 만드는 압축본
+eis-work-widget-extension.zip
