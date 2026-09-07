@@ -1,0 +1,13 @@
+{
+  "name": "eis-work-widget",
+  "version": "1.0.0",
+  "description": "EIS 근무시간 데스크톱 위젯",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "type": "commonjs",
+  "devDependencies": {
+    "electron": "^44.1.1"
+  }
+}

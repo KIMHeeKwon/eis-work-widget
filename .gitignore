@@ -1,0 +1,5 @@
+# 의존 꾸러미 — package-lock.json 으로 다시 받는다
+desktop/node_modules/
+
+# 앱이 돌면서 남기는 기록. 사내 시스템 주소와 이동 경로가 그대로 담긴다
+desktop/run.log

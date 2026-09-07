@@ -1,0 +1,256 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>EIS 근무시간 위젯 — 예시안</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=Barlow+Condensed:wght@600&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f5f5f8; --ink:#1d1f20; --accent:#5980a6; --accent2:#749dc4;
+  --line:rgba(29,31,32,.18); --rule:rgba(29,31,32,.14); --rule-w:rgba(29,31,32,.10);
+  --track:rgba(29,31,32,.12); --tick:rgba(29,31,32,.18);
+  --t40:rgba(29,31,32,.40); --t50:rgba(29,31,32,.50); --t55:rgba(29,31,32,.55); --t70:rgba(29,31,32,.70);
+  --fb:"Barlow","Noto Sans KR",system-ui,sans-serif;
+  --fc:"Barlow Condensed",sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#0e1418;font-family:var(--fb);color:#cfd8e0;padding:44px 40px 80px}
+h1{font-family:var(--fc);font-size:22px;letter-spacing:.10em;text-transform:uppercase;color:#eef6ff;font-weight:600}
+.lede{font-size:12.5px;line-height:1.7;color:rgba(214,235,255,.55);max-width:780px;margin-top:10px}
+.lede b{color:rgba(214,235,255,.85);font-weight:600}
+section{margin-top:46px}
+.cap{font-family:var(--fc);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:rgba(214,235,255,.75);display:flex;align-items:center;gap:10px}
+.cap i{font-style:normal;background:rgba(148,188,227,.16);color:#94bce3;padding:2px 7px;font-size:10px;letter-spacing:.08em}
+.cap s{text-decoration:none;color:rgba(214,235,255,.38);letter-spacing:.06em}
+.note{font-size:12px;line-height:1.65;color:rgba(214,235,255,.45);max-width:620px;margin-top:16px}
+.stage{margin-top:18px;padding:22px 26px;background:var(--bg);display:inline-block}
+
+.w{position:relative;background:var(--bg);border:1px solid var(--line);
+   box-shadow:0 12px 32px rgba(43,43,45,.20);color:var(--ink);font-family:var(--fb)}
+.corner{position:absolute;width:11px;height:11px;
+  background:linear-gradient(#7a7a7d,#7a7a7d) center/1px 100% no-repeat,
+             linear-gradient(#7a7a7d,#7a7a7d) center/100% 1px no-repeat}
+.tl{top:-6px;left:-6px}.tr{top:-6px;right:-6px}.bl{bottom:-6px;left:-6px}.br{bottom:-6px;right:-6px}
+.lbl{font-family:var(--fc);font-weight:600;font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--t55)}
+.num{font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:-.03em;line-height:1}
+.hd{display:flex;align-items:center;justify-content:space-between;padding:7px 12px;border-bottom:1px solid var(--rule)}
+.badge{font-family:var(--fc);font-size:9px;letter-spacing:.12em;color:var(--t40);display:flex;align-items:center;gap:5px}
+.badge::before{content:"";width:5px;height:5px;background:var(--accent)}
+.bar{height:5px;background:var(--track);position:relative}
+.bar>span{position:absolute;left:0;top:0;bottom:0;background:var(--accent)}
+.bar>em{position:absolute;top:0;bottom:0;background:var(--accent2);opacity:.6}
+.ko{font-size:10px;color:var(--t55);line-height:1.45}
+.paren{font-weight:500;font-size:10.5px;color:var(--t50)}
+.row{display:grid;grid-template-columns:1fr auto;align-items:baseline;margin-bottom:3px}
+.row .k{font-size:10.5px;color:var(--t70)}
+.row .v{font-weight:600;font-size:13px;font-variant-numeric:tabular-nums}
+
+/* A */
+#a{width:592px;display:grid;grid-template-columns:186px 178px 1fr}
+#a>div{padding:12px 14px}
+#a>div+div{border-left:1px solid var(--rule)}
+#a .gaugewrap{position:relative;width:148px;height:84px;margin:4px auto 0}
+#a .gnum{position:absolute;left:0;right:0;bottom:2px;text-align:center}
+#a .gnum b{font-size:34px}
+#a .gnum s{text-decoration:none;font-weight:500;font-size:13px;color:var(--t50);margin-left:2px}
+#a .blk+.blk{margin-top:11px}
+
+/* B */
+#b{width:604px;padding:11px 14px 0}
+#b .grid{display:grid;grid-template-columns:auto 132px 1fr 1fr 1fr;gap:0 18px;align-items:center}
+#b .pct{display:flex;align-items:baseline;gap:1px}
+#b .pct b{font-size:30px;color:var(--accent)}
+#b .pct s{text-decoration:none;font-weight:600;font-size:19px;color:var(--accent);letter-spacing:-.03em}
+#b .cell .v{font-weight:600;font-size:13px;font-variant-numeric:tabular-nums;margin-top:2px}
+#b .prog{margin:11px -14px 0;height:3px;background:var(--track);position:relative}
+#b .prog>span{position:absolute;left:0;top:0;bottom:0;background:var(--accent)}
+#b .prog>em{position:absolute;top:0;bottom:0;background:var(--accent2)}
+
+/* C */
+#c{width:540px}
+#c .body{display:grid;grid-template-columns:repeat(5,1fr);padding:12px 14px 10px}
+#c .col{text-align:center;position:relative}
+#c .col+.col::before{content:"";position:absolute;left:0;top:6px;bottom:6px;width:1px;background:var(--rule-w)}
+#c .cv{font-weight:700;font-size:17px;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+#c .tube{width:26px;height:66px;margin:7px auto 6px;background:
+  repeating-linear-gradient(to top, var(--tick) 0 1px, transparent 1px 16.5px), var(--track);
+  position:relative}
+#c .tube>span{position:absolute;left:0;right:0;bottom:0;background:var(--accent)}
+#c .tube>em{position:absolute;left:0;right:0;background:var(--accent2);opacity:.6}
+#c .cl{font-family:var(--fc);font-size:8.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--t50)}
+
+/* D */
+#d{width:312px}
+#d .sheet{padding:12px 14px 13px}
+#d .today{display:flex;align-items:baseline;justify-content:space-between;padding-bottom:9px;border-bottom:1px solid var(--rule)}
+#d .today .t{font-weight:700;font-size:19px;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+#d .sec{margin-top:10px}
+#d .sec .lbl{margin-bottom:5px}
+#d .line{display:grid;grid-template-columns:1fr auto;align-items:baseline;padding:3px 0}
+#d .line+.line{border-top:1px solid var(--rule-w)}
+#d .line .k{font-size:10.5px;color:var(--t70)}
+#d .line .v{font-weight:600;font-size:12.5px;font-variant-numeric:tabular-nums}
+#d .line.em .v{font-size:15px;color:var(--accent)}
+</style>
+</head>
+<body>
+
+<h1>EIS 근무시간 위젯 — 예시안 4종</h1>
+<p class="lede">
+Industry 디자인 시스템(청강 블루프린트)의 라이트 테마를 그대로 씁니다. 값은
+<b>2026-09-04 실측</b>입니다. 정산기간 08-30~09-12, 기준 80:00, 실적 36:36, 평일 계획 24:00,
+휴일 계획 8:00. 잔여는 <b>휴일근무를 뺀 값</b>이고 휴일분은 괄호로 병기했습니다.
+네 안은 계열이 서로 다릅니다. 무엇을 크게 보여줄지가 각각 다릅니다.
+</p>
+
+<section>
+  <div class="cap"><i>A</i> 계기 + 3칸 · 592×132 <s>— 달성률을 계기 하나로</s></div>
+  <div class="stage">
+    <div class="w" id="a">
+      <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+      <div>
+        <div class="lbl">달성률 · 현재까지</div>
+        <div class="gaugewrap">
+          <svg width="148" height="84" viewBox="0 0 148 90">
+            <path d="M12 78 A62 62 0 0 1 136 78" fill="none" stroke="rgba(29,31,32,.12)" stroke-width="9"/>
+            <path d="M12 78 A62 62 0 0 1 136 78" fill="none" stroke="#749dc4" stroke-width="9"
+                  stroke-dasharray="147.6 194.7" opacity=".5"/>
+            <path d="M12 78 A62 62 0 0 1 136 78" fill="none" stroke="#5980a6" stroke-width="9"
+                  stroke-dasharray="89.1 194.7"/>
+          </svg>
+          <div class="gnum"><b class="num">46</b><s>%</s></div>
+        </div>
+        <div class="ko" style="margin-top:7px">출근예정 포함 <b style="color:var(--accent)">76%</b></div>
+      </div>
+      <div>
+        <div class="lbl">잔여 시간</div>
+        <div class="blk" style="margin-top:6px">
+          <div class="row"><span class="k">현재까지</span><span class="v num" style="font-size:26px;color:var(--accent)">43:24</span></div>
+          <div class="bar" style="margin-top:5px"><span style="width:46%"></span></div>
+        </div>
+        <div class="blk">
+          <div class="row"><span class="k">출근예정 포함</span><span class="v num" style="font-size:19px">19:24</span></div>
+          <div class="bar" style="margin-top:5px"><span style="width:46%"></span><em style="left:46%;width:30%"></em></div>
+        </div>
+        <div class="ko" style="margin-top:9px">휴일 8:00 반영 시 <b style="color:var(--ink)">11:24</b></div>
+      </div>
+      <div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding-bottom:6px;border-bottom:1px solid var(--rule-w)">
+          <span class="lbl">오늘 · 09-04</span><span class="badge">EIS</span>
+        </div>
+        <div class="row" style="margin-top:7px"><span class="k">출근 / 퇴근</span><span class="v">08:13 <span style="color:var(--t40)">/</span> 08:17</span></div>
+        <div class="row"><span class="k">근무 · 현재까지</span><span class="v">36:36</span></div>
+        <div class="row"><span class="k">출근예정</span><span class="v">24:00 <span class="paren">(+휴일 8:00)</span></span></div>
+        <div class="row"><span class="k">기준 근무</span><span class="v" style="color:var(--t70)">80:00</span></div>
+        <div class="ko" style="margin-top:9px;color:var(--t40)">정산기간 08-30 ~ 09-12 · 18회차</div>
+      </div>
+    </div>
+  </div>
+  <p class="note">달성률 계기가 주인공입니다. 진한 호가 현재까지, 옅은 호가 출근예정까지 채운 자리입니다.
+  출퇴근·근무·기준을 오른쪽 한 칸에 표로 몰아 두어 숫자를 훑기 쉽습니다.</p>
+</section>
+
+<section>
+  <div class="cap"><i>B</i> 초슬림 리본 · 604×72 <s>— 화면 맨 위에 붙이는 한 줄</s></div>
+  <div class="stage">
+    <div class="w" id="b">
+      <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+      <div class="grid">
+        <div class="pct"><b class="num">43</b><s>:24</s></div>
+        <div>
+          <div class="lbl">잔여 · 실적 기준</div>
+          <div class="ko" style="margin-top:2px">계획 반영 <b style="color:var(--ink);font-weight:600">19:24</b></div>
+          <div class="ko" style="color:var(--t40)">휴일 포함 11:24</div>
+        </div>
+        <div class="cell"><div class="lbl">오늘 출퇴근</div><div class="v">08:13 – 08:17</div></div>
+        <div class="cell"><div class="lbl">근무 · 실적</div><div class="v">36:36 <span style="font-weight:500;font-size:11px;color:var(--t50)">/ 80:00</span></div></div>
+        <div class="cell"><div class="lbl">정산기간</div><div class="v" style="font-size:12px">08-30 – 09-12</div></div>
+      </div>
+      <div class="prog"><span style="width:46%"></span><em style="left:46%;width:30%"></em></div>
+    </div>
+  </div>
+  <p class="note">계기를 버리고 높이를 72px로 줄였습니다. 하단 3px 선이 실적(진한색)과 계획(연한색)을
+  이어 붙여 달성률을 대신합니다. 화면을 거의 먹지 않는 대신 정보는 숫자에만 있습니다.</p>
+</section>
+
+<section>
+  <div class="cap"><i>C</i> 눈금 막대 계기판 · 540×150 <s>— 다섯 값을 같은 자에 세운다</s></div>
+  <div class="stage">
+    <div class="w" id="c">
+      <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+      <div class="hd">
+        <span class="lbl">근무시간 · 0 – 80:00</span>
+        <span class="badge">09-04 · 08:13 – 08:17</span>
+      </div>
+      <div class="body">
+        <div class="col">
+          <div class="cv" style="color:var(--accent)">36:36</div>
+          <div class="tube"><span style="height:46%"></span></div>
+          <div class="cl">실적</div>
+        </div>
+        <div class="col">
+          <div class="cv">24:00</div>
+          <div class="tube"><em style="bottom:46%;height:30%"></em></div>
+          <div class="cl">계획</div>
+        </div>
+        <div class="col">
+          <div class="cv">60:36</div>
+          <div class="tube"><span style="height:46%"></span><em style="bottom:46%;height:30%"></em></div>
+          <div class="cl">합계</div>
+        </div>
+        <div class="col">
+          <div class="cv">43:24</div>
+          <div class="tube"><span style="height:54%;background:rgba(29,31,32,.22)"></span></div>
+          <div class="cl">잔여 · 실적</div>
+        </div>
+        <div class="col">
+          <div class="cv">19:24</div>
+          <div class="tube"><span style="height:24%;background:rgba(29,31,32,.22)"></span></div>
+          <div class="cl">잔여 · 계획</div>
+        </div>
+      </div>
+      <div style="padding:0 14px 10px;display:flex;justify-content:space-between;align-items:baseline">
+        <span class="ko" style="color:var(--t40)">정산기간 08-30 ~ 09-12 · 18회차</span>
+        <span class="ko">휴일근무 계획 <b style="color:var(--ink);font-weight:600">8:00</b> <span style="color:var(--t40)">(합계·잔여에서 제외)</span></span>
+      </div>
+    </div>
+  </div>
+  <p class="note">다섯 값을 0–80:00 같은 눈금에 세웠습니다. 눈금선 다섯 칸이 16시간씩이라
+  막대 높이만 봐도 절대값이 비교됩니다. 휴일근무는 막대에 넣지 않고 아래 한 줄로 뺐습니다.</p>
+</section>
+
+<section>
+  <div class="cap"><i>D</i> 스펙 시트 · 312×250 <s>— 세로형, 그래픽 없이 숫자만</s></div>
+  <div class="stage">
+    <div class="w" id="d">
+      <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+      <div class="hd"><span class="lbl">근무시간현황</span><span class="badge">08-30 – 09-12</span></div>
+      <div class="sheet">
+        <div class="today">
+          <div><div class="lbl">오늘 · 09-04 (금)</div><div class="t" style="margin-top:3px">08:13 – 08:17</div></div>
+          <div style="text-align:right"><div class="lbl">체류</div><div class="t" style="margin-top:3px;color:var(--accent)">0:04</div></div>
+        </div>
+        <div class="sec">
+          <div class="lbl">근무시간</div>
+          <div class="line"><span class="k">실적 (08-31 ~ 09-04)</span><span class="v">36:36</span></div>
+          <div class="line"><span class="k">계획 (09-09 ~ 09-11)</span><span class="v">24:00</span></div>
+          <div class="line"><span class="k">합계</span><span class="v">60:36 <span class="paren">(+휴일 8:00)</span></span></div>
+          <div class="line"><span class="k">기준 근무시간</span><span class="v" style="color:var(--t70)">80:00</span></div>
+        </div>
+        <div class="sec">
+          <div class="lbl">잔여시간</div>
+          <div class="line em"><span class="k">실적 기준</span><span class="v">43:24</span></div>
+          <div class="line em"><span class="k">계획 반영</span><span class="v">19:24 <span class="paren">(휴일 포함 11:24)</span></span></div>
+        </div>
+        <div class="bar" style="margin-top:11px"><span style="width:46%"></span><em style="left:46%;width:30%"></em></div>
+      </div>
+    </div>
+  </div>
+  <p class="note">계기·막대를 거의 버리고 표로만 씁니다. 항목 이름을 다 적을 수 있어
+  실적과 계획이 각각 어느 날짜 구간인지까지 보입니다. 세로형이라 화면 옆에 세워 두는 쓰임입니다.</p>
+</section>
+
+</body>
+</html>
