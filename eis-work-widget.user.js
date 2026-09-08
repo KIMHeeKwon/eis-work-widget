@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         EIS 근무시간 위젯
 // @namespace    etri.eis.work-widget
-// @version      1.0.0
+// @version      1.1.0
 // @description  통합경영정보시스템 근무시간현황을 화면 위 작은 판으로 보여 준다. 화면에 표시된 값만 읽는다.
 // @match        https://eis2.etri.re.kr/*
 // @run-at       document-idle
