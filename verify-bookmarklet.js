@@ -70,6 +70,7 @@ store['etri.eis.workWidget'] = JSON.stringify({
   from: '2026-08-30', to: '2026-09-12', round: '18회차',
   base: 4800, actual: 2196, planWork: 1440, planHoliday: 480, sumNoHoliday: 3636,
   remainNow: 2604, remainPlan: 1164, remainAll: 684, pctNow: 0.4575, pctPlan: 0.7575,
+  pctAll: 0.8575,
   truncated: false, day: { date: '2026-09-04', start: '08:13', end: '08:17' },
   at: Date.now() - 12 * 60000
 });
@@ -79,8 +80,10 @@ if (!html) throw new Error('캐시가 있는데도 "n분 전 값" 화면을 그�
 console.log('stale 렌더 OK · ' + html.length + ' chars');
 
 var bad = 0;
-['43:24', '19:24', '11:24', '08:13', '12분 전 값',
- '출근예정 포함', '달성률 · 현재까지', '>46<', '>76%<'].forEach(function (f) {
+// 잔여 시간 칸은 위가 '남은시간'(휴일까지 반영한 remainAll), 아래가 '현재까지'다
+// (2026-09-08 사용자 결정). 휴일을 뺀 remainPlan(19:24)은 이제 화면에 나오지 않는다
+['43:24', '11:24', '08:13', '12분 전 값', '남은시간', '남음',
+ '달성률 · 출장·휴일 포함', '>86<', '>46%<'].forEach(function (f) {
   var ok = html.indexOf(f) >= 0;
   if (!ok) bad++;
   console.log((ok ? '  OK   ' : '  실패 ') + f);

@@ -50,6 +50,16 @@
     return sign + Math.floor(v / 60) + ':' + String(v % 60).padStart(2, '0');
   }
 
+  // 잔여가 양수면 아직 채워야 할 시간이고(파랑), 음수면 기준을 넘긴 시간이다(빨강).
+  // 2026-09-08 사용자 요청 — 모자람과 초과를 색과 낱말로 함께 알린다
+  function rem(min, size) {
+    var over = min < 0;
+    return '<span class="v num" style="font-size:' + size + 'px;color:' +
+      (over ? '#b04a3c' : '#5980a6') + '">' + hm(min) +
+      '<span style="font-weight:500;font-size:10px;color:rgba(29,31,32,.45);margin-left:4px">' +
+      (over ? '초과' : '남음') + '</span></span>';
+  }
+
   function today() {
     var d = new Date();
     return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' +
@@ -193,6 +203,9 @@
       remainAll: base - actual - planWork - planHoliday,
       pctNow: base ? actual / base : 0,
       pctPlan: base ? (actual + planWork) / base : 0,
+      // 휴일근무 예정까지 더한 달성률. 위젯의 큰 숫자와 트레이가 함께 읽는다
+      // (2026-09-08 사용자 결정 — 잔여와 달성률의 기준을 휴일 포함으로 통일했다)
+      pctAll: base ? (actual + planWork + planHoliday) / base : 0,
       truncated: truncated,
       day: null,
       at: Date.now()
@@ -279,9 +292,12 @@
     el.classList.toggle('stale', !!stale);
 
     var pct = Math.round(d.pctNow * 100);
-    var pctP = Math.round(d.pctPlan * 100);
     var barNow = Math.max(0, Math.min(100, d.pctNow * 100));
-    var barPlan = Math.max(0, Math.min(100 - barNow, (d.pctPlan - d.pctNow) * 100));
+    // 앱을 고치기 전에 저장된 캐시에는 pctAll이 없다. 그때는 여기서 직접 구한다
+    var pctAll = d.pctAll != null ? d.pctAll
+      : (d.base ? (d.actual + d.planWork + d.planHoliday) / d.base : 0);
+    var pctP = Math.round(pctAll * 100);
+    var barAll = Math.max(0, Math.min(100 - barNow, (pctAll - d.pctNow) * 100));
     var dd = d.day || {};
 
     var foot = stale
@@ -298,29 +314,28 @@
       '<span class="x" title="닫기">&#10005;</span>' +
 
       '<div class="hdl">' +
-        '<div class="lbl">달성률 · 현재까지</div>' +
+        '<div class="lbl">달성률 · 출장·휴일 포함</div>' +
         '<div class="gw">' + gauge(d.pctNow, d.pctPlan) +
-          '<div class="gn"><b class="num">' + pct + '</b><s>%</s></div></div>' +
-        '<div class="ko" style="margin-top:7px">출근예정 포함 ' +
-          '<b style="color:#5980a6">' + pctP + '%</b></div>' +
+          '<div class="gn"><b class="num">' + pctP + '</b><s>%</s></div></div>' +
+        '<div class="ko" style="margin-top:7px">현재까지 ' +
+          '<b style="color:#5980a6">' + pct + '%</b></div>' +
       '</div>' +
 
       '<div>' +
         '<div class="lbl">잔여 시간</div>' +
         '<div style="margin-top:6px">' +
-          '<div class="row"><span class="k">현재까지</span>' +
-            '<span class="v num" style="font-size:26px;color:#5980a6">' + hm(d.remainNow) + '</span></div>' +
-          '<div class="bar"><span style="width:' + barNow + '%"></span></div>' +
+          '<div class="row"><span class="k">남은시간<br>' +
+            '<span class="paren">출장·휴일 포함</span></span>' + rem(d.remainAll, 26) + '</div>' +
+          '<div class="bar"><span style="width:' + barNow + '%"></span>' +
+            '<em style="left:' + barNow + '%;width:' + barAll + '%"></em></div>' +
         '</div>' +
         '<div style="margin-top:11px">' +
-          '<div class="row"><span class="k">출근예정 포함</span>' +
-            '<span class="v num" style="font-size:19px">' + hm(d.remainPlan) + '</span></div>' +
-          '<div class="bar"><span style="width:' + barNow + '%"></span>' +
-            '<em style="left:' + barNow + '%;width:' + barPlan + '%"></em></div>' +
+          '<div class="row"><span class="k">현재까지</span>' + rem(d.remainNow, 19) + '</div>' +
+          '<div class="bar"><span style="width:' + barNow + '%"></span></div>' +
         '</div>' +
         (d.planHoliday
-          ? '<div class="ko" style="margin-top:9px">휴일 ' + hm(d.planHoliday) +
-            ' 반영 시 <b style="color:#1d1f20">' + hm(d.remainAll) + '</b></div>'
+          ? '<div class="ko" style="margin-top:9px">이 중 휴일근무 <b style="color:#1d1f20">' +
+            hm(d.planHoliday) + '</b></div>'
           : '<div class="ko" style="margin-top:9px;color:rgba(29,31,32,.40)">휴일근무 예정 없음</div>') +
       '</div>' +
 

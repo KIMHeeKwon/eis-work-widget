@@ -48,7 +48,7 @@ if (back !== code) throw new Error('인코딩 왕복이 일치하지 않는다')
 
 // 5) 지워지면 안 되는 조각들이 살아 있는지 본다. 주석 제거가 코드를 먹었는지 잡는다.
 ['output9:input', 'position:static;overflow:visible', 'M12 78 A62 62 0 0 1 136 78',
- '출근예정 포함', '달성률 · 현재까지'].forEach(function (frag) {
+ '달성률 · 출장·휴일 포함', '남은시간'].forEach(function (frag) {
   if (code.indexOf(frag) < 0) throw new Error('조각이 사라졌다: ' + frag);
   if (ext.indexOf(frag) < 0) throw new Error('확장에서 조각이 사라졌다: ' + frag);
 });

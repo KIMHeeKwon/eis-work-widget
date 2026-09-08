@@ -13,7 +13,11 @@
   clearInterval(window.__eiswTimer);   // 여기엔 읽을 EIS 화면이 없다. 값은 main이 보낸다
 
   window.__eiswIpc.onData(function (d) {
-    window.__eiswRender(d, Date.now() - d.at > 15 * 60 * 1000);
+    // 값이 도착한 그 순간의 나이로 판정한다. 앱은 5분마다 읽지만, 화면이 다시 계산하기
+    // 전에 그 자리에 남아 있던 옛 값을 받아 오는 일이 있다 (2026-09-08 실측 — 로그인
+    // 직후 34분 묵은 값, 자동 갱신에서 4분 묵은 값). 갓 계산된 값은 몇십 초를 넘지
+    // 않으므로 2분을 경계로 삼는다
+    window.__eiswRender(d, Date.now() - d.at > 2 * 60 * 1000);
     var x = document.querySelector('#eisw .x');       // 렌더할 때마다 새로 그려지므로 매번 다시 건다
     if (x) x.onclick = function () { window.__eiswIpc.hide(); };
     // 여기서는 화면을 직접 읽지 못하므로, 위젯이 걸어 둔 동작을 main에 부탁하는 것으로 바꾼다

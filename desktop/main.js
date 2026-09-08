@@ -15,7 +15,9 @@ process.on('uncaughtException', function (e) { console.error('[uncaught]', e && 
 
 // 콘솔은 파일로 넘길 때 버퍼에 갇혀 뒷부분이 보이지 않는다. 진단이 끝날 때까지
 // 같은 줄을 로그 파일에도 그대로 남긴다
-const LOG = path.join(__dirname, 'run.log');
+// 실행파일로 묶으면 __dirname이 app.asar 안이라 쓸 수 없다. 그때는 설정 파일과
+// 같은 자리(%APPDATA%\eis-work-widget)에 남긴다 (2026-09-08)
+const LOG = path.join(app.isPackaged ? app.getPath('userData') : __dirname, 'run.log');
 try { fs.writeFileSync(LOG, ''); } catch (e) { }
 const rawLog = console.log;
 console.log = function () {
@@ -264,10 +266,10 @@ function updateTray() {
   tray.setImage(nativeImage.createFromDataURL(trayIcon(last ? last.pctNow : null)));
   tray.setToolTip(last
     ? ['EIS 근무시간',
-       '잔여 · 현재까지      ' + hm(last.remainNow),
-       '잔여 · 출근예정 포함 ' + hm(last.remainPlan),
-       '달성률 ' + Math.round(last.pctNow * 100) + '%' +
-         ' (출근예정 포함 ' + Math.round(last.pctPlan * 100) + '%)',
+       '잔여 · 출장·휴일 포함 ' + hm(last.remainAll),
+       '잔여 · 현재까지       ' + hm(last.remainNow),
+       '달성률 ' + Math.round(last.pctAll * 100) + '%' +
+         ' (현재까지 ' + Math.round(last.pctNow * 100) + '%)',
        new Date(last.at).toLocaleTimeString('ko-KR') + ' 기준'].join('\n')
     : 'EIS 근무시간 — 아직 값을 읽지 못했습니다');
   buildMenu();
@@ -275,7 +277,7 @@ function updateTray() {
 
 function buildMenu() {
   tray.setContextMenu(Menu.buildFromTemplate([
-    { label: last ? '잔여 ' + hm(last.remainNow) + '  (출근예정 포함 ' + hm(last.remainPlan) + ')'
+    { label: last ? '잔여 ' + hm(last.remainAll) + '  (현재까지 ' + hm(last.remainNow) + ')'
                   : '값을 읽는 중…', enabled: false },
     { type: 'separator' },
     { label: '위젯 창 보이기', type: 'checkbox', checked: cfg.showWidget,
